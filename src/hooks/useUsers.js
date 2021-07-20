@@ -54,11 +54,31 @@ export const useUsers = () => {
         .doc(`users/${user.uid}`)
         .collection('groups')
         .onSnapshot(snapshot => {
+          //* update userGroups
           let userGroups = snapshot.docs.map(playerDoc => {
             return { ...playerDoc.data(), uid: playerDoc.id };
           });
           // every time this ckall back executes we update local state
-          authDispach(authAction.updateUser({ myGroups: userGroups }));
+
+          //* update userEvents
+          let allEvents = [];
+          userGroups.map(gr => {
+            const eventDoc = gr.events.map(event => {
+              return {
+                ...event,
+                groupName: gr.name,
+                groupUid: gr.uid,
+              };
+            });
+            allEvents = [...allEvents, ...eventDoc];
+          });
+
+          authDispach(
+            authAction.updateUser({
+              myGroups: userGroups,
+              myEvents: allEvents,
+            }),
+          );
           console.log(
             'we detect a group changes we updated local state myGroupe',
           );

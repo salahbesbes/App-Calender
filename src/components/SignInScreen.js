@@ -25,6 +25,7 @@ const SignInScreen = ({ navigation }) => {
         title={'LogIn'}
         onPress={async () => {
           await signIn({ email, password });
+          navigation.navigate('HomeScreen');
         }}
       />
 

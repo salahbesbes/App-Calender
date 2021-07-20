@@ -15,6 +15,7 @@ export const initialState = {
     name: null,
     phone: null,
     myGroups: [],
+    myEvents: [],
     friends: [],
     age: null,
   },

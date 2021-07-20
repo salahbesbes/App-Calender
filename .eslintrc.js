@@ -3,6 +3,5 @@ module.exports = {
   extends: '@react-native-community',
   rules: {
     'object-curly-spacing': ['error', 'always'],
-    // 'Inline-style': ['ignore', 'always'],
   },
 };

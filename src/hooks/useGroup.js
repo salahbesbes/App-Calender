@@ -27,7 +27,7 @@ const useGroup = () => {
     [authDispach, user.uid],
   );
 
-  const removeFriend = useCallback(
+  const removeGroup = useCallback(
     async groupId => {
       try {
         authDispach(authAction.loading());
@@ -45,7 +45,28 @@ const useGroup = () => {
     },
     [authDispach, user.uid],
   );
-  return { ...authState, addGroup, removeFriend, authDispach };
+
+  const updateGroup = useCallback(
+    async groupData => {
+      try {
+        authDispach(authAction.loading());
+
+        await db()
+          .collection('users')
+          .doc(user.uid)
+          .collection('groups')
+          .doc(groupData.groupUid)
+          .update({ events: db.FieldValue.arrayUnion(groupData) });
+
+        authDispach(authAction.success());
+      } catch (error) {
+        console.log('from useGroupe add =>> error ', error.message);
+      }
+    },
+    [authDispach, user.uid],
+  );
+
+  return { ...authState, addGroup, removeGroup, authDispach, updateGroup };
 };
 
 export default useGroup;

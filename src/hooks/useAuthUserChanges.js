@@ -29,8 +29,25 @@ export const useAuthUserChanges = ({ navigation }) => {
             .collection('friends')
             .get();
 
-          let playerFriends = friendsDocs.docs.map(playerDoc => {
-            return { ...playerDoc.data(), uid: playerDoc.id };
+          let userFriends = friendsDocs.docs.map(friendDoc => {
+            return { ...friendDoc.data(), uid: friendDoc.id };
+          });
+
+          //* fetch Groups
+
+          let myGroupsDocs = await db()
+            .collection('users')
+            .doc(userChanged.uid)
+            .collection('groups')
+            .get();
+
+          //* fetch all events ofeach group
+
+          let myGroups = myGroupsDocs.docs.map(groupDoc => {
+            return {
+              ...groupDoc.data(),
+              uid: groupDoc.id,
+            };
           });
 
           //* update local state
@@ -38,7 +55,8 @@ export const useAuthUserChanges = ({ navigation }) => {
             authAction.updateUser({
               ...loggedUser,
               uid: userChanged.uid,
-              friends: playerFriends,
+              friends: userFriends,
+              myGroups,
             }),
           );
 

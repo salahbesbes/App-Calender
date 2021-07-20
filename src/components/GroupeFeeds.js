@@ -1,17 +1,13 @@
 import React, { useContext } from 'react';
-import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
+import { ScrollView, Text, TouchableOpacity } from 'react-native';
 import { AppStateContext } from '../../stateProvider';
-import SignOutButton from './SignOutButton';
 import { useState } from 'react';
 import { Overlay } from 'react-native-elements/dist/overlay/Overlay';
 import { Button } from 'react-native-elements/dist/buttons/Button';
-import { Divider } from 'react-native-elements/dist/divider/Divider';
-import { Input } from 'react-native-elements';
-import { Card, Chip } from 'react-native-elements';
-import { Switch } from 'react-native-elements/dist/switch/switch';
-import { ButtonGroup } from 'react-native-elements/dist/buttons/ButtonGroup';
-import useGroup from '../hooks/useGroup';
-import { authAction } from '../stateManager/actions/auth-A';
+import { Card } from 'react-native-elements';
+import CreateGroupeModal from './Modals/CreateGroup';
+import CreateEventModal from './Modals/CreateEventInGroup';
+
 const GroupeFeeds = ({ navigation }) => {
   const { authContext } = useContext(AppStateContext);
   const [authState, authDispatch] = authContext; // distructuring
@@ -21,6 +17,7 @@ const GroupeFeeds = ({ navigation }) => {
     setVisible(!visible);
   };
   const { user } = authState;
+  console.log('group length ', user.myGroups.length);
   return (
     <ScrollView>
       {/* <SignOutButton navigation={navigation} />
@@ -44,7 +41,7 @@ const GroupeFeeds = ({ navigation }) => {
       />
 
       {user?.myGroups.map((groupObj, i) => (
-        <UserCard key={i} groupObj={groupObj} />
+        <UserCard key={i} groupObj={groupObj} navigation={navigation} />
       ))}
       <Overlay
         presentationStyle="fullScreen"
@@ -57,61 +54,32 @@ const GroupeFeeds = ({ navigation }) => {
   );
 };
 
-const UserCard = ({ groupObj }) => {
+const UserCard = ({ groupObj, navigation }) => {
+  const [visible, setVisible] = useState(false);
+  const toggleOverlay = () => {
+    setVisible(!visible);
+  };
   return (
-    <View>
-      <Chip title={groupObj.name} />
-      <Chip title={groupObj.description} />
-    </View>
+    <>
+      <TouchableOpacity
+        onPress={() => {
+          toggleOverlay();
+        }}>
+        <Card>
+          <Card.Title>{groupObj.name}</Card.Title>
+          <Card.Divider />
+          <Text style={{ marginBottom: 10 }}>{groupObj.description}</Text>
+        </Card>
+      </TouchableOpacity>
+      <Overlay
+        fullScreen
+        transparent={false}
+        isVisible={visible}
+        onBackdropPress={toggleOverlay}>
+        <CreateEventModal groupObj={groupObj} />
+      </Overlay>
+    </>
   );
 };
 
-const CreateGroupeModal = ({ theme }) => {
-  const [but] = useState(['public', 'Private']);
-  const [selectedIndex, setselectedIndex] = useState(null);
-  const [description, setDescription] = useState(null);
-  const [name, setName] = useState(null);
-  const { error, addGroup, authDispach } = useGroup();
-  return (
-    <View style={{ marginBottom: 5, width: 250 }}>
-      <ButtonGroup
-        onPress={setselectedIndex}
-        selectedButtonStyle={{ backgroundColor: 'red' }}
-        selectedIndex={selectedIndex}
-        buttons={but}
-        buttonContainerStyle={{ backgroundColor: 'lightgrey' }}
-        textStyle={{ color: 'green' }}
-      />
-      <Input onChangeText={setName} label="Group Name" placeholder="..." />
-      <Input
-        onChangeText={setDescription}
-        label="description"
-        placeholder="..."
-      />
-      <Text style={{ color: 'red', marginBottom: 10, textAlign: 'center' }}>
-        {error}
-      </Text>
-      <Button
-        containerStyle={{ backgroundColor: 'orange' }}
-        onPress={() => {
-          if (selectedIndex == null) {
-            authDispach(authAction.failure('pls select public or private'));
-            return;
-          }
-          addGroup({
-            private: selectedIndex === 1,
-            name,
-            description,
-          });
-        }}
-        title="create"
-        icon={{
-          name: 'send',
-          size: 15,
-          color: 'white',
-        }}
-      />
-    </View>
-  );
-};
 export default GroupeFeeds;
