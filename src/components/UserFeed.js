@@ -6,8 +6,7 @@ import SignOutButton from './SignOutButton';
 
 const UserFeed = ({ navigation }) => {
   const [allUsers, setAllUsers] = useState([]);
-  const { listenOnGroups, ListenOnFriendsChanges, listenOnUsers, user } =
-    useUsers();
+  const { ListenOnFriendsChanges, listenOnUsers, user } = useUsers();
 
   const allUsersExceptMe = allUsers.filter(el => el.uid !== user.uid);
   useEffect(() => {
@@ -18,11 +17,7 @@ const UserFeed = ({ navigation }) => {
     const unsubscribeFriends = ListenOnFriendsChanges();
     return unsubscribeFriends;
   }, [ListenOnFriendsChanges]);
-  useEffect(() => {
-    const unsubscribeGroups = listenOnGroups();
-    return unsubscribeGroups;
-  }, [listenOnGroups]);
-  console.log('friends length', user.friends.length);
+
   return (
     <ScrollView>
       <SignOutButton navigation={navigation} />
@@ -41,7 +36,7 @@ const UserFeed = ({ navigation }) => {
 };
 
 const UserCard = ({ userObj }) => {
-  const { user, addFriend, removeFriend } = useFriend();
+  const { addFriend, removeFriend } = useFriend();
   return (
     <View>
       <Text style={[style.textCard]}>name: {userObj?.name}</Text>

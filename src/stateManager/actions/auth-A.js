@@ -3,6 +3,11 @@ export const SUCCESS = 'SUCCESS';
 export const FAILURE = 'FAILURE';
 export const UPDATEUSER = 'UPDATEUSER';
 export const LOGOUT = 'LOGOUT';
+export const UPDATEEVENT = 'UPDATEEVENT';
+export const ADDEVENT = 'ADDEVENT';
+export const DELETEEVENT = 'DELETEEVENT';
+
+export const ADDEVENTGROUP = 'ADDEVENTGROUP';
 
 export const authAction = {
   loading: () => ({ type: LOADING }),
@@ -14,4 +19,9 @@ export const authAction = {
     type: UPDATEUSER,
     payload,
   }),
+  removeEvent: payload => ({ type: DELETEEVENT, payload }),
+  addEvent: payload => ({ type: ADDEVENT, payload }),
+  // updateEvent: payload => ({ type: UPDATEEVENT, payload }),
+
+  addEventGroup: payload => ({ type: ADDEVENTGROUP, payload }),
 };

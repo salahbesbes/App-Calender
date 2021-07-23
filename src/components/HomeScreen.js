@@ -1,5 +1,4 @@
-import React, { useLayoutEffect } from 'react';
-import { useHomeListner } from '../hooks/useHomeListners';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import UserFeed from './UserFeed';
 import GroupeFeeds from './GroupeFeeds';
@@ -7,6 +6,7 @@ import FriendsFeeds from './FriendsFeeds';
 import { Avatar } from 'react-native-elements';
 import LandingScreen from './LandingScreen';
 import SignOutButton from './SignOutButton';
+import { useHomeListner } from '../hooks/useHomeListners';
 const FeedTab = createMaterialTopTabNavigator();
 
 function HomeScreen({ navigation }) {
@@ -28,9 +28,11 @@ function HomeScreen({ navigation }) {
       ),
     });
   }, [navigation]);
-
-  useHomeListner();
-
+  const { listenOnGroups } = useHomeListner();
+  useEffect(() => {
+    const unsubscribeGroups = listenOnGroups();
+    return unsubscribeGroups;
+  }, [listenOnGroups]);
   return (
     <>
       <FeedTab.Navigator>

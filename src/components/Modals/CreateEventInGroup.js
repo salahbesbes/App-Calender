@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { Overlay } from 'react-native-elements/dist/overlay/Overlay';
 import { Button } from 'react-native-elements/dist/buttons/Button';
@@ -7,8 +7,15 @@ import { Card } from 'react-native-elements';
 import { Input } from 'react-native-elements/dist/input/Input';
 import useGroup from '../../hooks/useGroup';
 import { v4 as uuidv4 } from 'uuid';
+import { useEvents } from '../../hooks/useEvents';
+import EventDescription from '../Cards/EventDescription';
+import { AppStateContext } from '../../../stateProvider';
 
-const CreateEvent = ({ groupObj }) => {
+const CreateEventForGroup = ({ groupObj }) => {
+  const { authContext } = useContext(AppStateContext);
+  const [authState, authDispach] = authContext;
+  const { user } = authState;
+
   const [visible, setVisible] = useState(false);
   const toggleOverlay = () => {
     setVisible(!visible);
@@ -16,7 +23,6 @@ const CreateEvent = ({ groupObj }) => {
   const [events, setEvents] = useState({});
   useEffect(() => {
     const tempEvents = {};
-
     // extraction all markedDates from the groupeObj
     groupObj.events
       .map(el => el.markedDates)
@@ -32,7 +38,7 @@ const CreateEvent = ({ groupObj }) => {
   return (
     <View style={{ flex: 1 }}>
       <Calendar
-        current={'2021-07-18'}
+        current={'2021-07-20'}
         onDayPress={day => {
           setSelectedDateEvent(() => {
             // update the local var selectedDateEvent
@@ -46,8 +52,10 @@ const CreateEvent = ({ groupObj }) => {
             return {
               events: foundEventsAtThisDaySelected, // this can be empty
               date: day,
-              uid: uuidv4(), // create an dentifier for the event
               groupUid: groupObj.uid,
+              groupName: groupObj.name,
+              createdBy: user.name,
+              creatorUid: user.uid,
               markedDates: { [datePressed]: { selected: true } }, // persinst this to db
             };
           });
@@ -79,7 +87,8 @@ const CreateEventModal = ({ daySelected, setDaySelected }) => {
     setVisible(!visible);
   };
 
-  const { updateGroup } = useGroup();
+  const { createEvents } = useEvents();
+
   return (
     <ScrollView containerStyle={{ width: 250, justifyContent: 'center' }}>
       <Button
@@ -123,8 +132,9 @@ const CreateEventModal = ({ daySelected, setDaySelected }) => {
             setDaySelected(prevState => {
               return { ...prevState, events: [...prevState.events, newEvent] };
             });
+
             // update fireBase
-            updateGroup(newEvent);
+            createEvents(newEvent);
           }}
         />
       </Overlay>
@@ -132,22 +142,4 @@ const CreateEventModal = ({ daySelected, setDaySelected }) => {
   );
 };
 
-const EventDescription = ({ daySelected }) => {
-  return daySelected?.events?.length === 0 ? (
-    <View>
-      <Text> No Events </Text>
-    </View>
-  ) : (
-    daySelected.events.map((el, i) => (
-      <ScrollView key={i} contentContainerStyle={{}}>
-        <Card>
-          <Card.Title>{el.name}</Card.Title>
-          <Card.Divider />
-          <Text style={{ marginBottom: 10 }}>{el.description}</Text>
-        </Card>
-      </ScrollView>
-    ))
-  );
-};
-
-export default CreateEvent;
+export default CreateEventForGroup;

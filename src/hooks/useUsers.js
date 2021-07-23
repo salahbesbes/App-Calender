@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext } from 'react';
 import db from '@react-native-firebase/firestore';
 import { AppStateContext } from '../../stateProvider';
 import { authAction } from '../stateManager/actions/auth-A';
@@ -48,51 +48,9 @@ export const useUsers = () => {
     }
   }, [authDispach, user.uid]);
 
-  const listenOnGroups = useCallback(async () => {
-    try {
-      const unsubGroup = db()
-        .doc(`users/${user.uid}`)
-        .collection('groups')
-        .onSnapshot(snapshot => {
-          //* update userGroups
-          let userGroups = snapshot.docs.map(playerDoc => {
-            return { ...playerDoc.data(), uid: playerDoc.id };
-          });
-          // every time this ckall back executes we update local state
-
-          //* update userEvents
-          let allEvents = [];
-          userGroups.map(gr => {
-            const eventDoc = gr.events.map(event => {
-              return {
-                ...event,
-                groupName: gr.name,
-                groupUid: gr.uid,
-              };
-            });
-            allEvents = [...allEvents, ...eventDoc];
-          });
-
-          authDispach(
-            authAction.updateUser({
-              myGroups: userGroups,
-              myEvents: allEvents,
-            }),
-          );
-          console.log(
-            'we detect a group changes we updated local state myGroupe',
-          );
-        });
-      return unsubGroup;
-    } catch (error) {
-      console.log('from useGroupe listenOnGroups =>> error ', error.message);
-    }
-  }, [authDispach, user.uid]);
-
   return {
     ...authState,
     ListenOnFriendsChanges,
     listenOnUsers,
-    listenOnGroups,
   };
 };

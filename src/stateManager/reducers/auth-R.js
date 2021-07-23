@@ -4,6 +4,10 @@ import {
   FAILURE,
   LOGOUT,
   SUCCESS,
+  DELETEEVENT,
+  UPDATEEVENT,
+  ADDEVENT,
+  ADDEVENTGROUP,
 } from '../actions/auth-A';
 
 export const initialState = {
@@ -19,6 +23,7 @@ export const initialState = {
     friends: [],
     age: null,
   },
+  allEvents: [],
 };
 
 export function authReducer(state, { type, payload }) {
@@ -40,7 +45,55 @@ export function authReducer(state, { type, payload }) {
       return initialState;
     case FAILURE:
       return { ...state, loading: false, error: payload };
+    case DELETEEVENT:
+      const filtredEvents = state.allEvents.filter(ev => ev.uid !== payload);
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        allEvents: filtredEvents,
+      };
+    // case UPDATEEVENT:
+    //   const apdatedEvents = state.allEvents.map(ev =>
+    //     ev.uid === payload.uid ? payload : ev,
+    //   );
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //     error: false,
+    //     allEvents: apdatedEvents,
+    //   };
 
+    case ADDEVENT:
+      const uniqueObjects = [
+        ...new Map(
+          [...state.allEvents, ...payload].map(item => [item.uid, item]),
+        ).values(),
+      ];
+
+      return {
+        ...state,
+        allEvents: uniqueObjects,
+        loading: false,
+        error: false,
+      };
+    case ADDEVENTGROUP:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          myGroups: state.user.myGroups.map(gr =>
+            gr.uid === payload.groupUid
+              ? {
+                  ...gr,
+                  events: payload.events,
+                }
+              : gr,
+          ),
+        },
+        loading: false,
+        error: false,
+      };
     default:
       return state;
   }

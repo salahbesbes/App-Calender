@@ -42,7 +42,6 @@ const CreateGroupeModal = () => {
             private: selectedIndex === 1,
             name,
             description,
-            events: [],
           });
         }}
         title="create"

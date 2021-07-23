@@ -8,31 +8,27 @@ export const useHomeListner = () => {
   const [authState, authDispach] = authContext;
   const { user } = authState;
 
-  // we create a profile listner using firebase methode onSapshot()
-  const ListenOnProfileChanges = useCallback(() => {
+  const listenOnGroups = useCallback(async () => {
     try {
-      const unsubProfile = db()
+      const unsubGroup = db()
         .doc(`users/${user.uid}`)
+        .collection('groups')
         .onSnapshot(snapshot => {
-          const newProfile = snapshot.data();
+          let userGroups = snapshot.docs.map(playerDoc => {
+            return { ...playerDoc.data(), uid: playerDoc.id };
+          });
+          console.log(`user.events`, user?.myGroups[0]?.events?.length);
           // every time this ckall back executes we update local state
-          authDispach(authAction.updateUser(newProfile));
+          authDispach(authAction.updateUser({ myGroups: userGroups }));
           console.log(
-            'we detect a profile changes we updated local state profile',
+            'we detect a group changes we updated local state myGroupe',
           );
         });
-      // we unsubscribe from the listner (firebase documentation)
-      return unsubProfile;
+      return unsubGroup;
     } catch (error) {
-      console.log('use Home users listner error', error.message);
+      console.log('from useGroupe listenOnGroups =>> error ', error.message);
     }
-  }, [authDispach, user.uid]);
+  }, [user.uid, authDispach]);
 
-  // every time the component rendrs we execute the profile listner checking for updates
-  useEffect(() => {
-    const unsubscribeProfile = ListenOnProfileChanges();
-    return unsubscribeProfile;
-  }, [ListenOnProfileChanges]);
-
-  return { ...authState, authDispach };
+  return { ...authState, authDispach, listenOnGroups };
 };
