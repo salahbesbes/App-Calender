@@ -5,7 +5,7 @@ import {
   LOGOUT,
   SUCCESS,
   DELETEEVENT,
-  UPDATEEVENT,
+  DELETEEVENTGROUP,
   ADDEVENT,
   ADDEVENTGROUP,
 } from '../actions/auth-A';
@@ -44,7 +44,7 @@ export function authReducer(state, { type, payload }) {
     case LOGOUT:
       return initialState;
     case FAILURE:
-      return { ...state, loading: false, error: payload };
+      return { ...state, loading: false, error: payload }; // str
     case DELETEEVENT:
       const filtredEvents = state.allEvents.filter(ev => ev.uid !== payload);
       return {
@@ -70,13 +70,13 @@ export function authReducer(state, { type, payload }) {
           [...state.allEvents, ...payload].map(item => [item.uid, item]),
         ).values(),
       ];
-
       return {
         ...state,
         allEvents: uniqueObjects,
         loading: false,
         error: false,
       };
+
     case ADDEVENTGROUP:
       return {
         ...state,
@@ -87,6 +87,32 @@ export function authReducer(state, { type, payload }) {
               ? {
                   ...gr,
                   events: payload.events,
+                }
+              : gr,
+          ),
+        },
+        loading: false,
+        error: false,
+      };
+
+    case DELETEEVENT:
+      return {
+        ...state,
+        allEvents: state.allEvents.filter(ev => ev.uid !== payload),
+        loading: false,
+        error: false,
+      };
+
+    case DELETEEVENTGROUP:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          myGroups: state.user.myGroups.map(gr =>
+            gr.uid === payload.groupUid
+              ? {
+                  ...gr,
+                  events: gr.events.filter(ev => ev.uid !== payload.groupUid),
                 }
               : gr,
           ),

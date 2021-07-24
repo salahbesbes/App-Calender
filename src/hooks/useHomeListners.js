@@ -17,7 +17,6 @@ export const useHomeListner = () => {
           let userGroups = snapshot.docs.map(playerDoc => {
             return { ...playerDoc.data(), uid: playerDoc.id };
           });
-          console.log(`user.events`, user?.myGroups[0]?.events?.length);
           // every time this ckall back executes we update local state
           authDispach(authAction.updateUser({ myGroups: userGroups }));
           console.log(

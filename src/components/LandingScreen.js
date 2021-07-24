@@ -24,10 +24,10 @@ import EventCard from './Cards/EventCard';
 //   },
 // ]
 
-const LandingScreen = () => {
+const LandingScreen = ({ navigation }) => {
   const { authContext } = useContext(AppStateContext);
   const [authState, authDispach] = authContext;
-  const { user, allEvents } = authState;
+  const { allEvents } = authState;
 
   const [visible, setVisible] = useState(false);
   const toggleOverlay = () => {
@@ -42,10 +42,10 @@ const LandingScreen = () => {
     return unsubscribeProfile;
   }, [ListenOnProfileChanges]);
 
-  useEffect(() => {
-    const unsubscribeAllEvents = listenOnEvents();
-    return unsubscribeAllEvents;
-  }, [listenOnEvents]);
+  // useEffect(() => {
+  //   const unsubscribeAllEvents = listenOnEvents();
+  //   return unsubscribeAllEvents;
+  // }, [listenOnEvents]);
 
   return (
     <>
@@ -58,7 +58,9 @@ const LandingScreen = () => {
       <FlatList
         keyExtractor={(item, index) => index.toString()}
         data={allEvents}
-        renderItem={({ item }) => <EventCard item={item} user={user} />}
+        renderItem={({ item }) => (
+          <EventCard navigation={navigation} eventObj={item} />
+        )}
       />
 
       <Overlay

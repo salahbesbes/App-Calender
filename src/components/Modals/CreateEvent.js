@@ -86,7 +86,6 @@ const CreateEvent = ({ allEventsGroups }) => {
                   creatorUid: user.uid,
                   groupName: gr.name,
                   groupUid: gr.uid,
-                  groups: selectedGroups.map(group => group.uid),
                   name,
                   description,
                 });

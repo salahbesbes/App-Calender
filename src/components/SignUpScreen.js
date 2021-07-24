@@ -4,9 +4,10 @@ import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import useSignUp from '../hooks/useSignUp';
 
 const SignUpScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('salah@gmail.com');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('123456');
   const { loading, error, signUp } = useSignUp();
+
   return (
     <View style={{ flex: 1, marginTop: 50 }}>
       <Button

@@ -12,10 +12,12 @@ const useSignUp = () => {
 
   const { authContext } = useContext(AppStateContext);
   const [authState, authDispatch] = authContext;
+
   // login
   const signUp = useCallback(
     async ({ email, password }) => {
       authDispatch(authAction.loading());
+
       if (!email || email === '') {
         authDispatch(authAction.failure('email must not be empty'));
         return;
@@ -53,6 +55,6 @@ const useSignUp = () => {
   );
 
   // since we need sinIn to call it on Click events we returning it with the authContext state modified
-  return { signUp };
+  return { signUp, ...authState };
 };
 export default useSignUp;

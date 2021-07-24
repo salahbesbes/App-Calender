@@ -1,7 +1,7 @@
 import React, { createContext, useReducer } from 'react';
 import { authReducer, initialState } from './src/stateManager/reducers/auth-R';
 
-export const AppStateContext = createContext('defaulttt');
+export const AppStateContext = createContext('');
 
 const AppStateProvider = props => {
   const [authState, authDispatch] = useReducer(authReducer, initialState);

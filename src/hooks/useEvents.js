@@ -28,28 +28,45 @@ export const useEvents = () => {
     [user.uid, authDispach],
   );
 
-  const updateEvents = useCallback(
+  const updateEvent = useCallback(
     async eventObj => {
       try {
         authDispach(authAction.loading());
-        eventObj.groups.map(async id => {
-          await db()
-            .collection('users')
-            .doc(user.uid)
-            .collection('groups')
-            .doc(id)
-            .collection('events')
-            .doc(eventObj.uid)
-            .update(eventObj);
-        });
+        await db()
+          .collection('users')
+          .doc(user.uid)
+          .collection('groups')
+          .doc(eventObj.groupUid)
+          .collection('events')
+          .doc(eventObj.uid)
+          .update(eventObj);
         console.log('we updated an events');
         authDispach(authAction.success());
       } catch (error) {
-        console.log('from useGroupe update =>> error ', error.message);
+        console.log('from useEvent update =>> error ', error.message);
       }
     },
     [user.uid, authDispach],
   );
-
-  return { ...authState, authDispach, updateEvents, createEvents };
+  const removeEvent = useCallback(
+    async eventObj => {
+      try {
+        authDispach(authAction.loading());
+        await db()
+          .collection('users')
+          .doc(user.uid)
+          .collection('groups')
+          .doc(eventObj.groupUid)
+          .collection('events')
+          .doc(eventObj.uid)
+          .delete();
+        console.log('we removed an event');
+        authDispach(authAction.success());
+      } catch (error) {
+        console.log('from useEvent remove =>> error ', error.message);
+      }
+    },
+    [user.uid, authDispach],
+  );
+  return { ...authState, authDispach, updateEvent, createEvents, removeEvent };
 };

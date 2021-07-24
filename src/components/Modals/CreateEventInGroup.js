@@ -20,12 +20,13 @@ const CreateEventForGroup = ({ groupObj }) => {
   const toggleOverlay = () => {
     setVisible(!visible);
   };
+
   const [events, setEvents] = useState({});
   useEffect(() => {
     const tempEvents = {};
     // extraction all markedDates from the groupeObj
     groupObj.events
-      .map(el => el.markedDates)
+      ?.map(el => el.markedDates)
       .map(obj => {
         Object.assign(tempEvents, obj);
       });
@@ -46,9 +47,10 @@ const CreateEventForGroup = ({ groupObj }) => {
             // as folow =>> we need the uid of group, date,
             const datePressed = day.dateString; // '2021-07-18
             const foundEventsAtThisDaySelected =
-              groupObj.events.filter(
+              groupObj.events?.filter(
                 el => el.date?.dateString === datePressed,
               ) || [];
+            console.log(`groupObj`, groupObj);
             return {
               events: foundEventsAtThisDaySelected, // this can be empty
               date: day,

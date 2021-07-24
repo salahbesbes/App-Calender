@@ -10,7 +10,10 @@ export const useLandingScreen = () => {
 
   const listenOnEvents = useCallback(async () => {
     try {
+      console.log('--->> listen on events called ');
+
       const multileUnsub = [];
+      console.log('length of groups', user.myGroups.length);
       user.myGroups.map(gr => {
         const singleUnsub = db()
           .doc(`users/${user.uid}`)
@@ -18,14 +21,30 @@ export const useLandingScreen = () => {
           .doc(gr.uid)
           .collection('events')
           .onSnapshot(snapshot => {
-            // all events of a single gr
+            // handle Delete
+            snapshot.docChanges().forEach(changeDoc => {
+              if (changeDoc.type === 'removed') {
+                authDispach(authAction.removeEvent(changeDoc.doc.id));
+                authDispach(
+                  authAction.removeEventGroup({
+                    eventUid: changeDoc.doc.id,
+                    groupUid: gr.uid,
+                  }),
+                );
+              }
+              console.log(
+                'fired from foreachloop for deletion after update local',
+              );
+            });
+
+            // handle Add / Update Event
             let allGroupEvents = snapshot.docs.map(eventDoc => {
               return {
                 ...eventDoc.data(),
                 uid: eventDoc.id,
               };
             });
-
+            console.log(`allGroupEvents`, allGroupEvents.length);
             authDispach(authAction.addEvent(allGroupEvents));
             authDispach(
               authAction.addEventGroup({

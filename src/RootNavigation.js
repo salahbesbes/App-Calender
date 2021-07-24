@@ -5,6 +5,7 @@ import HomeScreen from './components/HomeScreen';
 import Profile from './components/Profile';
 import SignInScreen from './components/SignInScreen';
 import SignUpScreen from './components/SignUpScreen';
+import UpdateEvent from './components/Modals/UpdateEvent';
 
 const Stack = createStackNavigator();
 
@@ -24,6 +25,7 @@ const RootNavigation = () => {
           name="HomeScreen"
           component={HomeScreen}
         />
+        <Stack.Screen name="UpdateEvent" component={UpdateEvent} />
       </Stack.Navigator>
     </NavigationContainer>
   );

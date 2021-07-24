@@ -8,6 +8,7 @@ import { AppStateContext } from '../../stateProvider';
 export const useAuthUserChanges = ({ navigation }) => {
   const { authContext } = useContext(AppStateContext);
   const [authState, authDispach] = authContext;
+
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(async userChanged => {
       console.log('on auth changed is executed');

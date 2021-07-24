@@ -1,32 +1,27 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import { Overlay } from 'react-native-elements/dist/overlay/Overlay';
+import React, { useEffect, useState } from 'react';
+import { View } from 'react-native';
 import { Button } from 'react-native-elements/dist/buttons/Button';
-import { Calendar } from 'react-native-calendars';
 import { Input } from 'react-native-elements/dist/input/Input';
 import { useEvents } from '../../hooks/useEvents';
-import { AppStateContext } from '../../../stateProvider';
-import DropDown from '../../components/utils/Selector';
 
-const UpdateEvent = ({ eventObj }) => {
-  const { authContext } = useContext(AppStateContext);
-  const [authState, authDispach] = authContext;
-  const { user } = authState;
+const UpdateEvent = ({ navigation, route }) => {
+  // get the params sent
+  const { eventObj } = route.params;
 
-  const { updateEvents } = useEvents();
+  const { updateEvent } = useEvents();
 
   const [name, setName] = useState(null);
   const [description, setDescription] = useState(null);
-  const [selectedDateEvent, setSelectedDateEvent] = useState({});
 
   //? {"date": "2021-07-23", "markedDates": {"2021-07-23": {"selected": true}}
-  const [selectedGroups, setSelectedGroups] = useState([]);
+
   useEffect(() => {
     setName(eventObj.name);
     setDescription(eventObj.description);
   }, [eventObj]);
+
   return (
-    <View style={{ marginBottom: 5, width: 250 }}>
+    <View style={{ marginTop: 20 }}>
       <Input
         value={name}
         onChangeText={setName}
@@ -40,17 +35,18 @@ const UpdateEvent = ({ eventObj }) => {
         placeholder="..."
       />
 
-      <DropDown items={user.myGroups} setSelectedGroups={setSelectedGroups} />
       <Button
         containerStyle={{ backgroundColor: 'orange' }}
         onPress={() => {
-          updateEvents({
-            ...eventObj,
+          const { uid, groupUid } = eventObj;
+          updateEvent({
+            groupUid,
+            uid,
             name,
             description,
           });
         }}
-        title="create"
+        title="Update"
         icon={{
           name: 'send',
           size: 15,

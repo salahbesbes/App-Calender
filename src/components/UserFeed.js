@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ListItem, Button } from 'react-native-elements';
+import { AppStateContext } from '../../stateProvider';
 import { useFriend } from '../hooks/useFriend';
 import { useUsers } from '../hooks/useUsers';
 import SignOutButton from './SignOutButton';
@@ -20,14 +22,6 @@ const UserFeed = ({ navigation }) => {
 
   return (
     <ScrollView>
-      <SignOutButton navigation={navigation} />
-
-      <Button
-        title={'go sign In'}
-        onPress={() => {
-          navigation.navigate('SignInScreen');
-        }}
-      />
       {allUsersExceptMe.map((userObj, i) => (
         <UserCard key={i} userObj={userObj} />
       ))}
@@ -36,33 +30,35 @@ const UserFeed = ({ navigation }) => {
 };
 
 const UserCard = ({ userObj }) => {
-  const { addFriend, removeFriend } = useFriend();
+  const { addFriend } = useFriend();
+  const { authContext } = useContext(AppStateContext);
+  const [authState, authDispach] = authContext;
+  const { user } = authState;
+
   return (
-    <View>
-      <Text style={[style.textCard]}>name: {userObj?.name}</Text>
-      <Text style={[style.textCard]}>uid: {userObj?.uid}</Text>
-      <Text style={[style.textCard]}>phone: {userObj?.phone}</Text>
-      <Text style={[style.textCard]}>age: {userObj?.age}</Text>
-      <Button
-        title={'add to friend'}
-        color="violet"
-        onPress={() => {
-          addFriend(userObj);
-        }}
-      />
-      <Button
-        title={'remove to friend'}
-        color="red"
-        onPress={() => {
-          removeFriend(userObj.uid);
-        }}
-      />
-    </View>
+    <ListItem bottomDivider>
+      <ListItem.Content style={{}}>
+        <ListItem.Title style={style.mv}>{userObj.name}</ListItem.Title>
+        <ListItem.Subtitle style={style.mv}>
+          Age: {userObj.age}
+        </ListItem.Subtitle>
+        <Text style={style.mv}> {userObj.phone}</Text>
+      </ListItem.Content>
+      {user.friends.map(friend => friend.uid).includes(userObj.uid) ? (
+        <Button title="already friend" disabled />
+      ) : (
+        <Button
+          title="Add"
+          onPress={() => {
+            addFriend(userObj);
+          }}
+        />
+      )}
+    </ListItem>
   );
 };
 const style = StyleSheet.create({
-  textCard: {
-    // marginVertical: 10,
+  mv: {
     paddingVertical: 5,
   },
 });
