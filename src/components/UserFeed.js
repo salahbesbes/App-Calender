@@ -4,11 +4,14 @@ import { ListItem, Button } from 'react-native-elements';
 import { AppStateContext } from '../../stateProvider';
 import { useFriend } from '../hooks/useFriend';
 import { useUsers } from '../hooks/useUsers';
+import EventCard from './Cards/EventCard';
+import CreateEvent from './Modals/CreateEvent';
 import SignOutButton from './SignOutButton';
 
 const UserFeed = ({ navigation }) => {
   const [allUsers, setAllUsers] = useState([]);
-  const { ListenOnFriendsChanges, listenOnUsers, user } = useUsers();
+  const { ListenOnFriendsChanges, listenOnUsers, user, publicEvents } =
+    useUsers();
 
   const allUsersExceptMe = allUsers.filter(el => el.uid !== user.uid);
   useEffect(() => {
@@ -24,6 +27,10 @@ const UserFeed = ({ navigation }) => {
     <ScrollView>
       {allUsersExceptMe.map((userObj, i) => (
         <UserCard key={i} userObj={userObj} />
+      ))}
+
+      {publicEvents.map((eventObj, i) => (
+        <EventCard key={i} eventObj={eventObj} navigation={navigation} />
       ))}
     </ScrollView>
   );

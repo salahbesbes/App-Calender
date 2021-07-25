@@ -11,6 +11,8 @@ export const DELETEEVENT = 'DELETEEVENT';
 export const DELETEEVENTGROUP = 'DELETEEVENTGROUP';
 export const ADDEVENTGROUP = 'ADDEVENTGROUP';
 
+export const ADDPUBLICEVENT = 'ADDPUBLICEVENT';
+
 export const authAction = {
   loading: () => ({ type: LOADING }),
   success: () => ({ type: SUCCESS }),
@@ -28,4 +30,6 @@ export const authAction = {
 
   removeEventGroup: payload => ({ type: DELETEEVENTGROUP, payload }),
   addEventGroup: payload => ({ type: ADDEVENTGROUP, payload }),
+
+  addPublicEvent: payload => ({ type: ADDPUBLICEVENT, payload }),
 };

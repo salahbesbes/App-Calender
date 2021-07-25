@@ -46,27 +46,17 @@ const useGroup = () => {
     [authDispach, user.uid],
   );
 
-  // const updateGroup = useCallback(
-  //   async groupData => {
-  //     try {
-  //       authDispach(authAction.loading());
+  const addPublicGroup = useCallback(
+    async groupObj => {
+      authDispach(authAction.loading());
+      await db().collection('publicGroups').add(groupObj);
+      console.log('created public group ');
+      authDispach(authAction.success());
+    },
+    [authDispach],
+  );
 
-  //       await db()
-  //         .collection('users')
-  //         .doc(user.uid)
-  //         .collection('groups')
-  //         .doc(groupData.groupUid)
-  //         .update({ events: db.FieldValue.arrayUnion(groupData) });
-
-  //       authDispach(authAction.success());
-  //     } catch (error) {
-  //       console.log('from useGroupe add =>> error ', error.message);
-  //     }
-  //   },
-  //   [authDispach, user.uid],
-  // );
-
-  return { ...authState, addGroup, removeGroup, authDispach };
+  return { ...authState, addGroup, removeGroup, addPublicGroup, authDispach };
 };
 
 export default useGroup;

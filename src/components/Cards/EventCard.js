@@ -15,7 +15,7 @@ const EventCard = ({ eventObj, navigation }) => {
     setVisible(!visible);
   };
 
-  const { removeEvent } = useEvents();
+  const { removeEvent, deletePublicEvent } = useEvents();
   return (
     <>
       <ListItem bottomDivider onPress={() => {}}>
@@ -46,17 +46,17 @@ const EventCard = ({ eventObj, navigation }) => {
                 type="Material"
                 color="red"
                 onPress={() => {
+                  console.log(`eventObj`, eventObj.private);
                   const { uid, groupUid } = eventObj;
-                  removeEvent({ uid, groupUid });
+                  eventObj.private
+                    ? removeEvent({ uid, groupUid }) // private ev
+                    : deletePublicEvent(uid); // public ev
                 }}
               />
             </TouchableOpacity>
           </>
         )}
       </ListItem>
-      <Overlay fullScreen isVisible={visible} onBackdropPress={toggleOverlay}>
-        <UpdateEvent eventObj={eventObj} />
-      </Overlay>
     </>
   );
 };

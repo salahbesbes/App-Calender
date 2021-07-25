@@ -8,6 +8,7 @@ import {
   DELETEEVENTGROUP,
   ADDEVENT,
   ADDEVENTGROUP,
+  ADDPUBLICEVENT,
 } from '../actions/auth-A';
 
 export const initialState = {
@@ -24,6 +25,7 @@ export const initialState = {
     age: null,
   },
   allEvents: [],
+  publicEvents: [],
 };
 
 export function authReducer(state, { type, payload }) {
@@ -119,6 +121,19 @@ export function authReducer(state, { type, payload }) {
         },
         loading: false,
         error: false,
+      };
+
+    case ADDPUBLICEVENT:
+      const publicEvents = [
+        ...new Map(
+          [...state.publicEvents, ...payload].map(item => [item.uid, item]),
+        ).values(),
+      ];
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        publicEvents: payload,
       };
     default:
       return state;

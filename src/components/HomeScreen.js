@@ -10,6 +10,7 @@ import { useHomeListner } from '../hooks/useHomeListners';
 import { useLandingScreen } from '../hooks/useLandingScreen';
 import { AppStateContext } from '../../stateProvider';
 import UpdateEvent from './Modals/UpdateEvent';
+import ProfileNavigation from './ProfileNavigation';
 const FeedTab = createMaterialTopTabNavigator();
 
 function HomeScreen({ navigation }) {
@@ -26,25 +27,28 @@ function HomeScreen({ navigation }) {
           rounded
           title={`${user.name && user.name[0] + user.name[1]}`}
           onPress={() => {
-            navigation.navigate('Profile');
+            navigation.navigate('ProfileNavigation');
           }}
         />
       ),
     });
   }, [navigation, user.name]);
 
-  const { listenOnGroups } = useHomeListner();
+  const { listenOnGroups, listnerPublicEvents } = useHomeListner();
 
+  // useEffect(() => {
+  //   const unsubscribeGroups = listenOnGroups();
+  //   return unsubscribeGroups;
+  // }, [listenOnGroups]);
+  // const { listenOnEvents } = useLandingScreen();
+  // useEffect(() => {
+  //   const unsubscribeAllEvents = listenOnEvents();
+  //   return unsubscribeAllEvents;
+  // }, [listenOnEvents]);
   useEffect(() => {
-    const unsubscribeGroups = listenOnGroups();
-    return unsubscribeGroups;
-  }, [listenOnGroups]);
-  const { listenOnEvents } = useLandingScreen();
-  useEffect(() => {
-    const unsubscribeAllEvents = listenOnEvents();
-    return unsubscribeAllEvents;
-  }, [listenOnEvents]);
-
+    const unsubscribePubEvents = listnerPublicEvents();
+    return unsubscribePubEvents;
+  }, [listnerPublicEvents]);
   return (
     <>
       <FeedTab.Navigator>
@@ -62,11 +66,6 @@ function HomeScreen({ navigation }) {
           options={{ tabBarLabel: 'Groups' }}
           name="GroupeFeeds"
           component={GroupeFeeds}
-        />
-        <FeedTab.Screen
-          options={{ tabBarLabel: 'Friends' }}
-          name="Friends"
-          component={FriendsFeeds}
         />
       </FeedTab.Navigator>
     </>

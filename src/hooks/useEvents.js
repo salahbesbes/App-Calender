@@ -13,8 +13,6 @@ export const useEvents = () => {
       try {
         authDispach(authAction.loading());
         await db()
-          .collection('users')
-          .doc(user.uid)
           .collection('groups')
           .doc(newEvent.groupUid)
           .collection('events')
@@ -33,8 +31,6 @@ export const useEvents = () => {
       try {
         authDispach(authAction.loading());
         await db()
-          .collection('users')
-          .doc(user.uid)
           .collection('groups')
           .doc(eventObj.groupUid)
           .collection('events')
@@ -53,8 +49,6 @@ export const useEvents = () => {
       try {
         authDispach(authAction.loading());
         await db()
-          .collection('users')
-          .doc(user.uid)
           .collection('groups')
           .doc(eventObj.groupUid)
           .collection('events')
@@ -68,5 +62,48 @@ export const useEvents = () => {
     },
     [user.uid, authDispach],
   );
-  return { ...authState, authDispach, updateEvent, createEvents, removeEvent };
+
+  const createPublicEvent = useCallback(
+    async pubEventObj => {
+      authDispach(authAction.loading());
+      await db().collection('publicEvents').add(pubEventObj);
+      console.log('we add public Event');
+      authDispach(authAction.success());
+    },
+    [authDispach],
+  );
+
+  const updatePublicEvent = useCallback(
+    async pubEventObj => {
+      authDispach(authAction.loading());
+      await db()
+        .collection('publicEvents')
+        .doc(pubEventObj.uid)
+        .update(pubEventObj);
+      console.log('we updated public Event');
+      authDispach(authAction.success());
+    },
+    [authDispach],
+  );
+
+  const deletePublicEvent = useCallback(
+    async eventUid => {
+      authDispach(authAction.loading());
+      await db().collection('publicEvents').doc(eventUid).delete();
+      console.log('we deleted public Event');
+      authDispach(authAction.success());
+    },
+    [authDispach],
+  );
+
+  return {
+    ...authState,
+    authDispach,
+    updateEvent,
+    createEvents,
+    removeEvent,
+    createPublicEvent,
+    updatePublicEvent,
+    deletePublicEvent,
+  };
 };

@@ -10,6 +10,7 @@ export const useHomeListner = () => {
 
   const listenOnGroups = useCallback(async () => {
     try {
+      authDispach(authAction.loading());
       const unsubGroup = db()
         .doc(`users/${user.uid}`)
         .collection('groups')
@@ -29,5 +30,17 @@ export const useHomeListner = () => {
     }
   }, [user.uid, authDispach]);
 
-  return { ...authState, authDispach, listenOnGroups };
+  const listnerPublicEvents = useCallback(async () => {
+    const unsubPubEvents = db()
+      .collection('publicEvents')
+      .onSnapshot(snapshot => {
+        let allPubEvents = snapshot.docs.map(EventDoc => {
+          return { ...EventDoc.data(), uid: EventDoc.id };
+        });
+        authDispach(authAction.addPublicEvent(allPubEvents));
+      });
+    return unsubPubEvents;
+  }, [authDispach]);
+
+  return { ...authState, authDispach, listenOnGroups, listnerPublicEvents };
 };

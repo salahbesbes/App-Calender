@@ -11,17 +11,17 @@ const CreateGroupeModal = () => {
   const [selectedIndex, setselectedIndex] = useState(null);
   const [description, setDescription] = useState(null);
   const [name, setName] = useState(null);
-  const { error, addGroup, authDispach } = useGroup();
+  const { error, addGroup, authDispach, addPublicGroup, user } = useGroup();
   return (
     <View style={{ marginBottom: 5, width: 250 }}>
-      <ButtonGroup
+      {/* <ButtonGroup
         onPress={setselectedIndex}
         selectedButtonStyle={{ backgroundColor: 'red' }}
         selectedIndex={selectedIndex}
         buttons={but}
         buttonContainerStyle={{ backgroundColor: 'lightgrey' }}
         textStyle={{ color: 'green' }}
-      />
+      /> */}
       <Input onChangeText={setName} label="Group Name" placeholder="..." />
       <Input
         onChangeText={setDescription}
@@ -39,7 +39,7 @@ const CreateGroupeModal = () => {
             return;
           }
           addGroup({
-            private: selectedIndex === 1,
+            private: true,
             name,
             description,
           });
