@@ -6,65 +6,7 @@ import { authAction } from '../stateManager/actions/auth-A';
 export const useLandingScreen = () => {
   const { authContext } = useContext(AppStateContext);
   const [authState, authDispach] = authContext;
-  const { user } = authState;
-
-  const listenOnEvents = useCallback(async () => {
-    try {
-      console.log('--->> listen on events called ');
-
-      const multileUnsub = [];
-      console.log('length of groups', user.myGroups.length);
-      user.myGroups.map(gr => {
-        const singleUnsub = db()
-          .doc(`users/${user.uid}`)
-          .collection('groups')
-          .doc(gr.uid)
-          .collection('events')
-          .onSnapshot(snapshot => {
-            // handle Delete
-            snapshot.docChanges().forEach(changeDoc => {
-              if (changeDoc.type === 'removed') {
-                authDispach(authAction.removeEvent(changeDoc.doc.id));
-                authDispach(
-                  authAction.removeEventGroup({
-                    eventUid: changeDoc.doc.id,
-                    groupUid: gr.uid,
-                  }),
-                );
-              }
-              console.log(
-                'fired from foreachloop for deletion after update local',
-              );
-            });
-
-            // handle Add / Update Event
-            let allGroupEvents = snapshot.docs.map(eventDoc => {
-              return {
-                ...eventDoc.data(),
-                uid: eventDoc.id,
-              };
-            });
-            console.log(`allGroupEvents`, allGroupEvents.length);
-            authDispach(authAction.addEvent(allGroupEvents));
-            authDispach(
-              authAction.addEventGroup({
-                groupUid: gr.uid,
-                events: allGroupEvents,
-              }),
-            );
-            multileUnsub.push(singleUnsub);
-          });
-      });
-      // return annnanimous function that execute the unsubscrition of each listner
-      return () => {
-        multileUnsub.forEach(unsub => {
-          unsub();
-        });
-      };
-    } catch (error) {
-      console.log('from useGroupe listenOnGroups =>> error ', error.message);
-    }
-  }, [authDispach, user.uid]);
+  const { user, allEvents } = authState;
 
   // we create a profile listner using firebase methode onSapshot()
   const ListenOnProfileChanges = useCallback(() => {
@@ -93,5 +35,5 @@ export const useLandingScreen = () => {
     }
   }, [authDispach, user.uid]);
 
-  return { listenOnEvents, ListenOnProfileChanges };
+  return { ListenOnProfileChanges };
 };

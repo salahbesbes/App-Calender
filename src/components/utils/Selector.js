@@ -1,10 +1,9 @@
 // import component
-import React, { Component, useRef, useState } from 'react';
-import { View } from 'react-native';
+import React, { useState } from 'react';
 import MultiSelect from 'react-native-multiple-select';
 
-const DropDown = ({ items, setSelectedGroups }) => {
-  const [selectedItems, setSelectedItems] = useState([]);
+const DropDown = ({ items, setSelectedGroups, defaultSelected }) => {
+  const [selectedItems, setSelectedItems] = useState(defaultSelected || []);
 
   return (
     <MultiSelect
@@ -35,7 +34,7 @@ const DropDown = ({ items, setSelectedGroups }) => {
         });
       }}
       selectedItems={selectedItems}
-      selectText="Pick Groups"
+      selectText="Pick Groups ...  "
       searchInputPlaceholderText="Search Items..."
       onChangeInput={text => console.log(text)}
       // altFontFamily="ProximaNova-Light"

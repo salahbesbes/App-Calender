@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AppStateContext } from '../../stateProvider';
 import SignOutButton from './SignOutButton';
+import Profile from './Profile';
+import FriendsFeeds from './FriendsFeeds';
 
 const Tab = createBottomTabNavigator();
 
@@ -84,14 +86,14 @@ const ProfileNavigation = ({ navigation, route }) => {
       <Tab.Screen name="Profile">
         {props => (
           <View>
-            <Text> Profile </Text>
+            <Profile navigation={navigation} />
           </View>
         )}
       </Tab.Screen>
       <Tab.Screen name="Friends">
         {props => (
           <View>
-            <Text> friends </Text>
+            <FriendsFeeds navigation={navigation} />
           </View>
         )}
       </Tab.Screen>

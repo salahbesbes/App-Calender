@@ -34,17 +34,17 @@ function HomeScreen({ navigation }) {
     });
   }, [navigation, user.name]);
 
-  const { listenOnGroups, listnerPublicEvents } = useHomeListner();
+  const { listenOnGroups, listnerPublicEvents, listenOnEvents } =
+    useHomeListner();
 
-  // useEffect(() => {
-  //   const unsubscribeGroups = listenOnGroups();
-  //   return unsubscribeGroups;
-  // }, [listenOnGroups]);
-  // const { listenOnEvents } = useLandingScreen();
-  // useEffect(() => {
-  //   const unsubscribeAllEvents = listenOnEvents();
-  //   return unsubscribeAllEvents;
-  // }, [listenOnEvents]);
+  useEffect(() => {
+    const unsubscribeGroups = listenOnGroups();
+    return unsubscribeGroups;
+  }, [listenOnGroups]);
+  useEffect(() => {
+    const unsubscribeAllEvents = listenOnEvents();
+    return unsubscribeAllEvents;
+  }, [listenOnEvents]);
   useEffect(() => {
     const unsubscribePubEvents = listnerPublicEvents();
     return unsubscribePubEvents;
@@ -53,7 +53,7 @@ function HomeScreen({ navigation }) {
     <>
       <FeedTab.Navigator>
         <FeedTab.Screen
-          options={{ tabBarLabel: 'My Calendar' }}
+          options={{ tabBarLabel: 'Calendar' }}
           name="Calendar"
           component={LandingScreen}
         />

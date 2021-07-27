@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useEvents } from '../../hooks/useEvents';
 import EventDescription from '../Cards/EventDescription';
 import { AppStateContext } from '../../../stateProvider';
+import SelectStartEndTime from '../utils/SelectStartEndTime';
 
 const CreateEventForGroup = ({ groupObj }) => {
   const { authContext } = useContext(AppStateContext);
@@ -25,13 +26,14 @@ const CreateEventForGroup = ({ groupObj }) => {
   useEffect(() => {
     const tempEvents = {};
     // extraction all markedDates from the groupeObj
+    console.log(`groupObj.events`, groupObj.events?.length);
     groupObj.events
       ?.map(el => el.markedDates)
       .map(obj => {
         Object.assign(tempEvents, obj);
       });
     setEvents(tempEvents);
-  }, [groupObj]);
+  }, [groupObj.events]);
 
   const [selectedDateEvent, setSelectedDateEvent] = useState({});
 
@@ -50,7 +52,6 @@ const CreateEventForGroup = ({ groupObj }) => {
               groupObj.events?.filter(
                 el => el.date?.dateString === datePressed,
               ) || [];
-            console.log(`groupObj`, groupObj);
             return {
               events: foundEventsAtThisDaySelected, // this can be empty
               date: day,
@@ -58,6 +59,7 @@ const CreateEventForGroup = ({ groupObj }) => {
               groupName: groupObj.name,
               createdBy: user.name,
               creatorUid: user.uid,
+              private: true,
               markedDates: { [datePressed]: { selected: true } }, // persinst this to db
             };
           });
@@ -81,6 +83,10 @@ const CreateEventForGroup = ({ groupObj }) => {
 };
 
 const CreateEventModal = ({ daySelected, setDaySelected }) => {
+  const { authContext } = useContext(AppStateContext);
+  const [authState, authDispach] = authContext;
+  const { loading } = authState;
+
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [visible, setVisible] = useState(false);
@@ -90,22 +96,24 @@ const CreateEventModal = ({ daySelected, setDaySelected }) => {
   };
 
   const { createEvents } = useEvents();
+  const [startAt, setStartAt] = useState('00:00');
+  const [endAt, setEndAt] = useState('00:00');
 
   return (
     <ScrollView containerStyle={{ width: 250, justifyContent: 'center' }}>
       <Button
         title="create event"
-        containerStyle={{ backgroundColor: 'orange' }}
+        containerStyle={{ backgroundColor: '#e76f51' }}
         onPress={toggleOverlay}
       />
       <EventDescription daySelected={daySelected} />
 
       <Overlay
-        fullScreen
+        presentationStyle="fullScreen"
         transparent={false}
         isVisible={visible}
         onBackdropPress={toggleOverlay}>
-        <>
+        <View style={{ width: 250 }}>
           <Input
             value={name}
             onChangeText={setName}
@@ -118,13 +126,22 @@ const CreateEventModal = ({ daySelected, setDaySelected }) => {
             label="description"
             placeholder="..."
           />
-        </>
+        </View>
+        <SelectStartEndTime
+          startAt={startAt}
+          endAt={endAt}
+          setStartAt={setStartAt}
+          setEndAt={setEndAt}
+        />
         <Button
+          loading={loading}
           containerStyle={{ backgroundColor: 'orange' }}
           title="create"
           onPress={() => {
             const { events, ...others } = daySelected;
             const newEvent = {
+              startAt,
+              endAt,
               name,
               description,
               ...others,

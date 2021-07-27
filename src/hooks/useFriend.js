@@ -45,5 +45,35 @@ export const useFriend = () => {
     },
     [authDispach, user.uid],
   );
-  return { user, addFriend, removeFriend };
+
+  const inviteFriendToGroups = useCallback(
+    async ({ selectedGroups, friendUid }) => {
+      try {
+        const selectedGroupsUids = selectedGroups.map(el => el.uid);
+        authDispach(authAction.loading());
+        selectedGroupsUids.forEach(async grUid => {
+          await db()
+            .collection('groups')
+            .doc(grUid)
+            .update({
+              members: db.FieldValue.arrayUnion(friendUid),
+            });
+          console.log(
+            'we add  friend ',
+            friendUid,
+            'to the groups  ',
+            selectedGroupsUids,
+          );
+        });
+        authDispach(authAction.success());
+      } catch (error) {
+        console.log(
+          'from usefriends inviteFriendToGroups =>> error ',
+          error.message,
+        );
+      }
+    },
+    [authDispach],
+  );
+  return { user, addFriend, removeFriend, inviteFriendToGroups };
 };

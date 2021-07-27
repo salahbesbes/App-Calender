@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Text, View } from 'react-native';
-import { Button } from 'react-native-elements/dist/buttons/Button';
-import { ButtonGroup } from 'react-native-elements/dist/buttons/ButtonGroup';
+import { Button } from 'react-native-elements';
 import { Input } from 'react-native-elements/dist/input/Input';
 import useGroup from '../../hooks/useGroup';
 import { authAction } from '../../stateManager/actions/auth-A';
@@ -32,12 +31,8 @@ const CreateGroupeModal = () => {
         {error}
       </Text>
       <Button
-        containerStyle={{ backgroundColor: 'orange' }}
+        buttonStyle={{ backgroundColor: '#e76f51' }}
         onPress={() => {
-          if (selectedIndex == null) {
-            authDispach(authAction.failure('pls select public or private'));
-            return;
-          }
           addGroup({
             private: true,
             name,

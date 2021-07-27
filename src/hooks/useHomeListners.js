@@ -12,8 +12,8 @@ export const useHomeListner = () => {
     try {
       authDispach(authAction.loading());
       const unsubGroup = db()
-        .doc(`users/${user.uid}`)
         .collection('groups')
+        .where('members', 'array-contains', user.uid || null)
         .onSnapshot(snapshot => {
           let userGroups = snapshot.docs.map(playerDoc => {
             return { ...playerDoc.data(), uid: playerDoc.id };
@@ -30,6 +30,61 @@ export const useHomeListner = () => {
     }
   }, [user.uid, authDispach]);
 
+  const listenOnEvents = useCallback(async () => {
+    try {
+      console.log('--->> listen on events called ');
+      let multileUnsub = [];
+      user.myGroups.map(gr => {
+        const singleUnsub = db()
+          .collection('groups')
+          .doc(gr.uid)
+          .collection('events')
+          .onSnapshot(snapshot => {
+            // handle Delete
+            snapshot.docChanges().forEach(changeDoc => {
+              if (changeDoc.type === 'removed') {
+                authDispach(authAction.removeEvent(changeDoc.doc.id));
+                authDispach(
+                  authAction.removeEventGroup({
+                    eventUid: changeDoc.doc.id,
+                    groupUid: gr.uid,
+                  }),
+                );
+              }
+              console.log(
+                'fired from foreachloop for deletion after update local',
+              );
+            });
+
+            // handle Add / Update Event
+            let allGroupEvents = snapshot.docs.map(eventDoc => {
+              return {
+                ...eventDoc.data(),
+                uid: eventDoc.id,
+              };
+            });
+            console.log(`allGroupEvents`, allGroupEvents.length);
+            authDispach(authAction.addEvent(allGroupEvents));
+            authDispach(
+              authAction.addEventGroup({
+                groupUid: gr.uid,
+                events: allGroupEvents,
+              }),
+            );
+            multileUnsub.push(singleUnsub);
+          });
+      });
+      // return annnanimous function that execute the unsubscrition of each listner
+      return () => {
+        multileUnsub.forEach(unsub => {
+          unsub();
+        });
+      };
+    } catch (error) {
+      console.log('from useevent listenOn events =>> error ', error.message);
+    }
+  }, [authDispach, user.uid]);
+
   const listnerPublicEvents = useCallback(async () => {
     const unsubPubEvents = db()
       .collection('publicEvents')
@@ -42,5 +97,11 @@ export const useHomeListner = () => {
     return unsubPubEvents;
   }, [authDispach]);
 
-  return { ...authState, authDispach, listenOnGroups, listnerPublicEvents };
+  return {
+    ...authState,
+    authDispach,
+    listenOnGroups,
+    listnerPublicEvents,
+    listenOnEvents,
+  };
 };

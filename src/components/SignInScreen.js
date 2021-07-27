@@ -1,65 +1,63 @@
 import React from 'react';
 import { useState } from 'react';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { View } from 'react-native';
 import { useAuthUserChanges } from '../hooks/useAuthUserChanges';
 import useSignIn from '../hooks/useSignIn';
+import { Button } from 'react-native-elements/dist/buttons/Button';
+import { Input } from 'react-native-elements/dist/input/Input';
 
 const SignInScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('salah@gmail.com');
-  const [password, setPassword] = useState('123456');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const { loading, error, signIn } = useSignIn();
   useAuthUserChanges({ navigation });
   return (
-    <View style={{ flex: 1, marginTop: 50 }}>
-      <Button
-        title={'go to profile'}
-        onPress={() => navigation.navigate('Profile')}
+    <View style={{ flex: 1, marginTop: 50, alignItems: 'center' }}>
+      <Input
+        style={{}}
+        onChangeText={setEmail}
+        value={email}
+        label="Email"
+        placeholder="..."
+        errorMessage={error}
+        errorStyle={{ color: 'red' }}
       />
-      <TextInput style={styles.input} onChangeText={setEmail} value={email} />
-      <TextInput
-        style={styles.input}
+      <Input
+        textContentType="password"
+        style={{}}
         onChangeText={setPassword}
         value={password}
+        label="Password"
+        placeholder="..."
       />
       <Button
+        buttonStyle={{
+          backgroundColor: '#e76f51',
+          width: 250,
+          marginBottom: 10,
+        }}
         title={'LogIn'}
+        loading={loading}
         onPress={async () => {
-          await signIn({ email, password });
-          navigation.navigate('HomeScreen');
+          const success = await signIn({ email, password });
+          success && navigation.navigate('HomeScreen');
         }}
       />
 
       <Button
+        buttonStyle={{
+          backgroundColor: 'orange',
+          width: 250,
+          marginBottom: 10,
+        }}
         title={'SignUp'}
         color="green"
         onPress={() => {
           navigation.navigate('SignUpScreen');
         }}
       />
-
-      <View>
-        <Text
-          style={[
-            styles.box,
-            { backgroundColor: error ? 'red' : loading ? 'yellow' : null },
-          ]}>
-          {error ? `error => ${error}` : loading ? 'LOADING ... ' : null}
-        </Text>
-      </View>
     </View>
   );
 };
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-  },
-  box: {
-    height: 50,
-    marginTop: 20,
-    textAlign: 'center',
-  },
-});
 
 export default SignInScreen;

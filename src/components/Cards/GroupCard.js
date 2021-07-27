@@ -17,7 +17,9 @@ const GroupCard = ({ groupObj, navigation }) => {
         <Card>
           <Card.Title>{groupObj.name}</Card.Title>
           <Card.Divider />
-          <Text style={{ marginBottom: 10 }}>{groupObj.description}</Text>
+          <Text style={{ marginBottom: 10 }}>
+            description: {groupObj.description}
+          </Text>
         </Card>
       </TouchableOpacity>
       <Overlay

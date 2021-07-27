@@ -27,6 +27,7 @@ const useSignIn = () => {
         console.log('User signed in!', user?.email || 'user is not json');
         authAction.updateUser({ email: user.email, uid: user.uid });
         authDispatch(authAction.success());
+        return 'success';
       } catch (error) {
         if (error.code === 'auth/email-already-in-use') {
           console.log('That email address is already in use!');

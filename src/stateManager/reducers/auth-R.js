@@ -114,7 +114,8 @@ export function authReducer(state, { type, payload }) {
             gr.uid === payload.groupUid
               ? {
                   ...gr,
-                  events: gr.events.filter(ev => ev.uid !== payload.groupUid),
+                  events:
+                    gr.events?.filter(ev => ev.uid !== payload.groupUid) || [],
                 }
               : gr,
           ),

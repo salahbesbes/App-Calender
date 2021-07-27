@@ -3,7 +3,7 @@ import { ScrollView } from 'react-native';
 import { AppStateContext } from '../../stateProvider';
 import { useState } from 'react';
 import { Overlay } from 'react-native-elements/dist/overlay/Overlay';
-import { Button } from 'react-native-elements/dist/buttons/Button';
+import { Button } from 'react-native-elements';
 import CreateGroupeModal from './Modals/CreateGroupModel';
 import GroupCard from './Cards/GroupCard';
 
@@ -20,22 +20,13 @@ const GroupeFeeds = ({ navigation }) => {
 
   return (
     <ScrollView>
-      {/* <SignOutButton navigation={navigation} />
-
-      <Button
-        title={'go sign In'}
-        onPress={() => {
-          navigation.navigate('SignInScreen');
-        }}
-      /> */}
-
       <Button
         icon={{
           name: 'add',
           size: 25,
           color: 'white',
         }}
-        containerStyle={{ backgroundColor: 'orange' }}
+        buttonStyle={{ backgroundColor: '#e76f51' }}
         title="Create"
         onPress={toggleOverlay}
       />

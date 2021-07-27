@@ -7,6 +7,8 @@ import SignInScreen from './components/SignInScreen';
 import SignUpScreen from './components/SignUpScreen';
 import UpdateEvent from './components/Modals/UpdateEvent';
 import ProfileNavigation from './components/ProfileNavigation';
+import EventsGroupsScreen from './components/EventsGroupsScreen';
+import { useHomeListner } from './hooks/useHomeListners';
 
 const Stack = createStackNavigator();
 
@@ -28,6 +30,7 @@ const RootNavigation = () => {
         />
         <Stack.Screen name="UpdateEvent" component={UpdateEvent} />
         <Stack.Screen name="ProfileNavigation" component={ProfileNavigation} />
+        <Stack.Screen name="AllEvents" component={EventsGroupsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

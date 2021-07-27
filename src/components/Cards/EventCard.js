@@ -1,10 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Icon, ListItem } from 'react-native-elements';
+import { Card, Icon, ListItem } from 'react-native-elements';
 import { Overlay } from 'react-native-elements/dist/overlay/Overlay';
 import { AppStateContext } from '../../../stateProvider';
 import { useEvents } from '../../hooks/useEvents';
-import UpdateEvent from '../Modals/UpdateEvent';
 
 const EventCard = ({ eventObj, navigation }) => {
   const { authContext } = useContext(AppStateContext);
@@ -18,7 +17,11 @@ const EventCard = ({ eventObj, navigation }) => {
   const { removeEvent, deletePublicEvent } = useEvents();
   return (
     <>
-      <ListItem bottomDivider onPress={() => {}}>
+      <ListItem
+        bottomDivider
+        onPress={async () => {
+          toggleOverlay();
+        }}>
         <DateItem date={eventObj.date} />
         <ListItem.Content>
           <ListItem.Title>{eventObj.name}</ListItem.Title>
@@ -46,7 +49,6 @@ const EventCard = ({ eventObj, navigation }) => {
                 type="Material"
                 color="red"
                 onPress={() => {
-                  console.log(`eventObj`, eventObj.private);
                   const { uid, groupUid } = eventObj;
                   eventObj.private
                     ? removeEvent({ uid, groupUid }) // private ev
@@ -57,6 +59,33 @@ const EventCard = ({ eventObj, navigation }) => {
           </>
         )}
       </ListItem>
+      <Overlay
+        presentationStyle="fullScreen"
+        transparent={false}
+        isVisible={visible}
+        onBackdropPress={toggleOverlay}>
+        <View style={{ width: 250 }}>
+          <Card>
+            <Card.Title>EventName: {eventObj.name}</Card.Title>
+            <Card.Divider />
+            <Text style={{ marginBottom: 10 }}>
+              createdBy: {eventObj.createdBy}
+            </Text>
+            <Text style={{ marginBottom: 10 }}>
+              date: {eventObj.date.dateString}
+            </Text>
+            <Text style={{ marginBottom: 10 }}>
+              startAt: {eventObj.startAt || 'undefined'}
+            </Text>
+            <Text style={{ marginBottom: 10 }}>
+              endAt: {eventObj.endAt || 'undefined'}
+            </Text>
+            <Text style={{ marginBottom: 10 }}>
+              description: {eventObj.description}
+            </Text>
+          </Card>
+        </View>
+      </Overlay>
     </>
   );
 };

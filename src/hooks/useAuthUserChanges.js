@@ -37,9 +37,8 @@ export const useAuthUserChanges = ({ navigation }) => {
           //* fetch Groups
 
           let myGroupsDocs = await db()
-            .collection('users')
-            .doc(userChanged.uid)
             .collection('groups')
+            .where('members', 'array-contains', userChanged.uid)
             .get();
 
           //* fetch all events ofeach group

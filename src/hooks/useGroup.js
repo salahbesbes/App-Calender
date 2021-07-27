@@ -13,13 +13,17 @@ const useGroup = () => {
     async groupData => {
       try {
         authDispach(authAction.loading());
-        await db()
-          .collection('users')
-          .doc(user.uid)
-          .collection('groups')
-          .add(groupData);
+        // await db()
+        //   .collection('users')
+        //   .doc(user.uid)
+        //   .collection('groups')
+        //   .add(groupData);
 
-        authDispach(authAction.success());
+        await db()
+          .collection('groups')
+          .add({ ...groupData, creatorUid: user.uid, members: [user.uid] });
+
+        console.log('create group');
       } catch (error) {
         console.log('from useGroupe add =>> error ', error.message);
       }

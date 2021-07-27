@@ -1,6 +1,6 @@
 import { Overlay } from 'react-native-elements';
 import React, { useContext, useEffect, useState } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { Button } from 'react-native-elements/dist/buttons/Button';
 import CreateEvent from './Modals/CreateEvent';
 import { useLandingScreen } from '../hooks/useLandingScreen';
@@ -27,14 +27,13 @@ import EventCard from './Cards/EventCard';
 const LandingScreen = ({ navigation }) => {
   const { authContext } = useContext(AppStateContext);
   const [authState, authDispach] = authContext;
-  const { allEvents } = authState;
-
+  const { allEvents, publicEvents } = authState;
   const [visible, setVisible] = useState(false);
   const toggleOverlay = () => {
     setVisible(!visible);
   };
 
-  const { listenOnEvents, ListenOnProfileChanges } = useLandingScreen();
+  const { ListenOnProfileChanges } = useLandingScreen();
 
   // every time the component rendrs we execute the profile listner checking for updates
   useEffect(() => {
@@ -42,22 +41,35 @@ const LandingScreen = ({ navigation }) => {
     return unsubscribeProfile;
   }, [ListenOnProfileChanges]);
 
-  // useEffect(() => {
-  //   const unsubscribeAllEvents = listenOnEvents();
-  //   return unsubscribeAllEvents;
-  // }, [listenOnEvents]);
-
   return (
     <>
-      <Button
-        containerStyle={{ backgroundColor: 'orange', marginVertical: 10 }}
-        title="create an event"
-        onPress={toggleOverlay}
-      />
-
+      <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+        <Button
+          containerStyle={{
+            backgroundColor: '#2a9d8f',
+            marginVertical: 10,
+            flex: 1,
+            marginHorizontal: 5,
+          }}
+          title="Private Events"
+          onPress={() => {
+            navigation.navigate('AllEvents');
+          }}
+        />
+        <Button
+          containerStyle={{
+            flex: 1,
+            backgroundColor: '#264653',
+            marginVertical: 10,
+            marginHorizontal: 5,
+          }}
+          title="create an event"
+          onPress={toggleOverlay}
+        />
+      </View>
       <FlatList
         keyExtractor={(item, index) => index.toString()}
-        data={allEvents}
+        data={publicEvents}
         renderItem={({ item }) => (
           <EventCard navigation={navigation} eventObj={item} />
         )}
@@ -68,7 +80,7 @@ const LandingScreen = ({ navigation }) => {
         transparent={false}
         isVisible={visible}
         onBackdropPress={toggleOverlay}>
-        <CreateEvent allEventsGroups={allEvents} />
+        <CreateEvent allEvents={[...allEvents, ...publicEvents]} />
       </Overlay>
     </>
   );
