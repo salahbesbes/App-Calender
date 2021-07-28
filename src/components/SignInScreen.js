@@ -5,6 +5,7 @@ import { useAuthUserChanges } from '../hooks/useAuthUserChanges';
 import useSignIn from '../hooks/useSignIn';
 import { Button } from 'react-native-elements/dist/buttons/Button';
 import { Input } from 'react-native-elements/dist/input/Input';
+import { ScrollView } from 'react-native';
 
 const SignInScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -12,9 +13,9 @@ const SignInScreen = ({ navigation }) => {
   const { loading, error, signIn } = useSignIn();
   useAuthUserChanges({ navigation });
   return (
-    <View style={{ flex: 1, marginTop: 50, alignItems: 'center' }}>
+    <ScrollView
+      contentContainerStyle={{ flex: 1, marginTop: 50, alignItems: 'center' }}>
       <Input
-        style={{}}
         onChangeText={setEmail}
         value={email}
         label="Email"
@@ -24,7 +25,7 @@ const SignInScreen = ({ navigation }) => {
       />
       <Input
         textContentType="password"
-        style={{}}
+        secureTextEntry
         onChangeText={setPassword}
         value={password}
         label="Password"
@@ -56,7 +57,7 @@ const SignInScreen = ({ navigation }) => {
           navigation.navigate('SignUpScreen');
         }}
       />
-    </View>
+    </ScrollView>
   );
 };
 

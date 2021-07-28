@@ -3,5 +3,11 @@ module.exports = {
   extends: '@react-native-community',
   rules: {
     'object-curly-spacing': ['error', 'always'],
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
   },
 };

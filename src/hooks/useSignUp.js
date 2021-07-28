@@ -15,7 +15,7 @@ const useSignUp = () => {
 
   // login
   const signUp = useCallback(
-    async ({ email, password }) => {
+    async ({ email, password, name }) => {
       authDispatch(authAction.loading());
 
       if (!email || email === '') {
@@ -34,6 +34,7 @@ const useSignUp = () => {
           ...authState.user,
           email: user.email,
           uid: user.uid,
+          name,
         };
         // when we create new account we are creting a new doc in users collection
         await db().collection('users').doc(user.uid).set(defaultProfile);

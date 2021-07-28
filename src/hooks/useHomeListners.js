@@ -83,7 +83,7 @@ export const useHomeListner = () => {
     } catch (error) {
       console.log('from useevent listenOn events =>> error ', error.message);
     }
-  }, [authDispach, user.uid]);
+  }, [authDispach, user.myGroups.length]);
 
   const listnerPublicEvents = useCallback(async () => {
     const unsubPubEvents = db()

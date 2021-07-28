@@ -44,24 +44,24 @@ const SelectStartEndTime = ({ setStartAt, setEndAt, startAt, endAt }) => {
             backgroundColor: '#f4a261',
             width: 100,
             flex: 1,
-            minHeight: 35,
+            // minHeight: 35,
             marginVertical: 10,
             marginHorizontal: 5,
           }}
           onPress={setShowStartAt}
-          title={`start at: ${startAt}`}
+          title={`start: ${startAt}`}
         />
         <Button
           containerStyle={{
             backgroundColor: '#e76f51',
             width: 100,
             flex: 1,
-            minHeight: 35,
+            // minHeight: 35,
             marginVertical: 10,
             marginHorizontal: 5,
           }}
           onPress={setShowEndAt}
-          title={`end at:  ${endAt}`}
+          title={`end: ${endAt}`}
         />
       </View>
       {showStartAt && <TimeSelector date={date} onChange={handleStratTime} />}

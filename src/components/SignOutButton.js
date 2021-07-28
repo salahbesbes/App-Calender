@@ -9,9 +9,8 @@ export default function SignOutButton({ navigation }) {
     <>
       <TouchableOpacity
         style={[styles.circular, { backgroundColor: 'red' }]}
-        onPress={async () => {
-          await signOut(navigation);
-          navigation.navigate('SignInScreen');
+        onPress={() => {
+          signOut(navigation).then(data => navigation.navigate('SignInScreen'));
         }}>
         <Text style={{ color: 'white' }}> Out</Text>
       </TouchableOpacity>

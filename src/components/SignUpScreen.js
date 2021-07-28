@@ -1,19 +1,26 @@
 import React from 'react';
 import { useState } from 'react';
-import { View } from 'react-native';
 import useSignUp from '../hooks/useSignUp';
 import { Button } from 'react-native-elements/dist/buttons/Button';
 import { Input } from 'react-native-elements/dist/input/Input';
+import { ScrollView } from 'react-native';
 
 const SignUpScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const { loading, error, signUp } = useSignUp();
 
   return (
-    <View style={{ flex: 1, marginTop: 50, alignItems: 'center' }}>
+    <ScrollView
+      contentContainerStyle={{ flex: 1, marginTop: 50, alignItems: 'center' }}>
       <Input
-        style={{}}
+        onChangeText={setName}
+        value={name}
+        label="User Name"
+        placeholder="..."
+      />
+      <Input
         onChangeText={setEmail}
         value={email}
         label="Email"
@@ -22,8 +29,8 @@ const SignUpScreen = ({ navigation }) => {
         errorStyle={{ color: 'red' }}
       />
       <Input
+        secureTextEntry
         textContentType="password"
-        style={{}}
         onChangeText={setPassword}
         value={password}
         label="Password"
@@ -38,7 +45,7 @@ const SignUpScreen = ({ navigation }) => {
         }}
         title={'SignUp'}
         onPress={async () => {
-          await signUp({ email, password });
+          await signUp({ email, password, name });
         }}
       />
       <Button
@@ -52,7 +59,7 @@ const SignUpScreen = ({ navigation }) => {
           navigation.navigate('SignInScreen');
         }}
       />
-    </View>
+    </ScrollView>
   );
 };
 export default SignUpScreen;
