@@ -1,13 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  FlatList,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { Overlay } from 'react-native-elements/dist/overlay/Overlay';
-import { Button } from 'react-native-elements/dist/buttons/Button';
+import { Button } from 'react-native-elements';
 import { Calendar } from 'react-native-calendars';
 import { Input } from 'react-native-elements/dist/input/Input';
 import { useEvents } from '../../hooks/useEvents';
@@ -16,7 +11,7 @@ import DropDown from '../../components/utils/Selector';
 import { ButtonGroup } from 'react-native-elements/dist/buttons/ButtonGroup';
 import SelectStartEndTime from '../utils/SelectStartEndTime';
 import { useWeather } from '../utils/wheatherApi';
-import { Badge, Card, Icon, ListItem } from 'react-native-elements';
+import { Badge, ListItem } from 'react-native-elements';
 
 const CreateEvent = ({ allEvents }) => {
   const { authContext } = useContext(AppStateContext);
@@ -91,6 +86,17 @@ const CreateEvent = ({ allEvents }) => {
         // markingType={'multi-dot'}
         markedDates={events} // events are fetched from db and sent here
       />
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginVertical: 10,
+          paddingVertical: 10,
+        }}>
+        <Text style={{ fontSize: 25, color: '#b5838d', fontWeight: 'bold' }}>
+          Temprature for 7 Days Ahead
+        </Text>
+      </View>
       <ScrollView>
         {sevenDaysWheather.map((el, i) => (
           <ListItem key={i} bottomDivider>
@@ -100,33 +106,29 @@ const CreateEvent = ({ allEvents }) => {
                 alignItems: 'center',
                 flexDirection: 'row',
               }}>
-              <ListItem.Title style={{ fontSize: 30 }}>
-                {el.date} {console.log(`el`, el)}
+              <ListItem.Title style={{ fontSize: 25 }}>
+                {el.date}
               </ListItem.Title>
-              <ListItem.Subtitle>{el.groupName}</ListItem.Subtitle>
               <ListItem.Content>
-                <TouchableOpacity>
-                  <Badge
-                    badgeStyle={{
-                      width: 50,
-                      height: 50,
-                      justifyContent: 'center',
-                      alignItems: 'center',
+                <View style={{ flexDirection: 'row', marginLeft: 30 }}>
+                  <Button
+                    title={`Day:${(el?.day - 273).toFixed(1)}`}
+                    buttonStyle={{
+                      backgroundColor: '#cb997e',
+                      marginHorizontal: 5,
                     }}
-                    value={`day 20 °C`}
-                    status="success"
-                    textStyle={{ fontSize: 25 }}
-                    containerStyle={
-                      {
-                        // position: 'absolute',
-                        // top: -4,
-                        // right: -4,
-                      }
-                    }
                   />
-                  {/* <Text> {`day : ${(el.day - 273.15).toFixed(0)}`} </Text>
+                  <Button
+                    buttonStyle={{
+                      backgroundColor: '#ddbea9',
+                      marginHorizontal: 5,
+                    }}
+                    title={`Eve:${(el?.eve - 273).toFixed(1)}`}
+                  />
+                </View>
+
+                {/* <Text> {`day : ${(el.day - 273.15).toFixed(0)}`} </Text>
                   <Text> {`eve : ${(el.eve - 273.15).toFixed(0)}`} </Text> */}
-                </TouchableOpacity>
               </ListItem.Content>
             </ListItem.Content>
           </ListItem>
